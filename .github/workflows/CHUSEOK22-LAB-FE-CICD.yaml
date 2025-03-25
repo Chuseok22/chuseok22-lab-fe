@@ -14,10 +14,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # .env.local 파일 생성
+      # 브랜치별 .env.local 생성
       - name: Create .env.local file
         run: |
-          echo -e "${{ secrets.ENV }}" > .env.local
+          if [ "${{ github.ref_name }}" == "main" ]; then
+            echo -e "${{ secrets.ENV_MAIN }}" > .env.local
+          elif [ "${{ github.ref_name }}" == "test" ]; then
+            echo -e "${{ secrets.ENV_TEST }}" > .env.local
+          fi
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
