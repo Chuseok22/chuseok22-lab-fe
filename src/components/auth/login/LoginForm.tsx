@@ -3,7 +3,7 @@
 import {FaRegEnvelope} from "react-icons/fa";
 import {MdLockOutline} from "react-icons/md";
 import Link from "next/link";
-import {useState} from "react";
+import React, {useState} from "react";
 import {login} from "@/api/auth/auth";
 import {router} from "next/client";
 
@@ -27,38 +27,38 @@ function LoginForm() {
 
   return (
       <form onSubmit={handleSubmit} className="flex flex-col items-center">
-        <div className="bg-gray-100 w-2/3 p-2 flex items-center mb-3">
+        <div className="bg-gray-100 w-4/5 lg:w-2/3 p-2 flex items-center mb-3">
           <FaRegEnvelope className="text-gray-400 m-2"/>
           <input type="text"
                  id="username"
                  name="id"
                  placeholder="아이디를 입력하세요"
-                 className="bg-inherit outline-none text-sm flex-1"
+                 className="bg-inherit outline-none text-xs lg:text-sm flex-1"
                  value={username}
                  onChange={e => setUsername(e.target.value)}
                  required
                  autoComplete="off"/>
         </div>
-        <div className="bg-gray-100 w-2/3 p-2 flex items-center mb-3">
+        <div className="bg-gray-100 w-4/5 lg:w-2/3 p-2 flex items-center mb-3">
           <MdLockOutline className="text-gray-400 m-2"/>
           <input type="password"
                  id="password"
                  name="password"
                  placeholder="비밀번호를 입력하세요"
-                 className="bg-inherit outline-none text-sm flex-1"
+                 className="bg-inherit outline-none text-xs lg:text-sm flex-1"
                  value={password}
                  onChange={e => setPassword(e.target.value)}
                  required/>
         </div>
         {error && <p className="text-red-500 text-xs mb-3">{error}</p>}
-        <div className="flex w-64 mb-5 justify-between">
+        <div className="flex w-4/5 lg:w-2/3 mb-5 justify-between">
           <label className="flex items-center text-xs">
             <input type="checkbox" name="remember" className="mr-1"/>Remember me
           </label>
           <Link href="" className="text-xs">Forget Password?</Link>
         </div>
         <button type="submit"
-                className="border-2 border-green-500 rounded-full px-12 py-2 text-green-500 inline-block font-semibold hover:bg-green-500 hover:text-white">
+                className="border-2 border-green-500 rounded-full px-12 py-2 text-green-500 inline-block font-semibold hover:bg-green-500 hover:text-white mb-2">
           Sign In
         </button>
       </form>
