@@ -29,23 +29,14 @@ function handleApiError(error: ApiError): never {
   }
 
   // 에러 객체에 사용자 메시지 추가
-  const enhancedError = new Error(userMessage);
-  (enhancedError as any).errorCode = error.errorCode;
-  (enhancedError as any).originalMessage = error.errorMessage;
-  throw enhancedError;
-}
-
-// 응답 본문이 비어있는지 확인
-function hasResponseBody(response: Response): boolean {
-  const contentLength = response.headers.get('content-length');
-  return contentLength !== null && parseInt(contentLength) > 0;
+  throw new Error(userMessage);
 }
 
 // 공통 fetch 함수
 export async function apiRequest<T>(
     endpoint: string,
     method: string = 'GET',
-    body?: any
+    body?: unknown
 ): Promise<ApiResponse<T>> {
   if (typeof window === 'undefined') {
     throw new Error('API 호출은 클라이언트 환경에서만 가능합니다.');
@@ -68,7 +59,9 @@ export async function apiRequest<T>(
   try {
     data = await response.json();
   } catch (err) {
-    data = null;
+    if (err instanceof Error) {
+      data = null;
+    }
   }
 
   return {data, status: response.status};
