@@ -33,7 +33,7 @@ export default function Login() {
             <h2 className="text-3xl font-bold mb-2">Sign Up</h2>
             <div className="border-2 w-10 border-white inline-block mb-2"></div>
             <p className="mb-5">Chuseok22 Lab 첫 방문이신가요?</p>
-            <Link href="" className="border-2 border-white rounded-full px-12 py-2 inline-block font-semibold hover:bg-white hover:text-green-500">Sign Up</Link>
+            <Link href="/auth/join" className="border-2 border-white rounded-full px-12 py-2 inline-block font-semibold hover:bg-white hover:text-green-500">Sign Up</Link>
           </div>
         </div>
       </div>
