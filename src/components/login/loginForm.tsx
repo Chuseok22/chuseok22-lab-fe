@@ -19,7 +19,9 @@ function LoginForm() {
       await login({username, password});
       await router.push('/');
     } catch (err) {
-      setError('로그인 실패: 아이디 또는 비밀번호를 확인하세요');
+      if (err instanceof Error) {
+        setError('로그인 실패: 아이디 또는 비밀번호를 확인하세요');
+      }
     }
   }
 

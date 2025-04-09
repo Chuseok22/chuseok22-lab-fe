@@ -56,39 +56,29 @@ export default function Join() {
   }
 
   const handleValidateUsername = async () => {
-    try {
-      const isValid = await validateUsername(formData.username);
-      setIsUsernameValid(isValid);
-      setInfos(prev => ({
-        ...prev,
-        username: isValid ? '사용가능한 아이디입니다.' : ''
-      }));
-      setErrors((prev) => ({
-        ...prev,
-        username: isValid ? '' : '이미 사용중인 아이디입니다.',
-      }));
-    } catch (err: any) {
-      setInfos(prev => ({...prev, username: ''}));
-      setErrors(prev => ({...prev, username: err.message}));
-    }
+    const isValid = await validateUsername(formData.username);
+    setIsUsernameValid(isValid);
+    setInfos(prev => ({
+      ...prev,
+      username: isValid ? '사용가능한 아이디입니다.' : ''
+    }));
+    setErrors((prev) => ({
+      ...prev,
+      username: isValid ? '' : '이미 사용중인 아이디입니다.',
+    }));
   };
 
   const handleValidateNickname = async () => {
-    try {
-      const isValid = await validateNickname(formData.nickname);
-      setIsNicknameValid(isValid);
-      setInfos(prev => ({
-        ...prev,
-        nickname: isValid ? '사용가능한 닉네임입니다.' : ''
-      }));
-      setErrors(prev => ({
-        ...prev,
-        nickname: isValid ? '' : '이미 사용중인 닉네임입니다.'
-      }));
-    } catch (err: any) {
-      setInfos(prev => ({...prev, nickname: ''}));
-      setErrors(prev => ({...prev, nickname: err.message}));
-    }
+    const isValid = await validateNickname(formData.nickname);
+    setIsNicknameValid(isValid);
+    setInfos(prev => ({
+      ...prev,
+      nickname: isValid ? '사용가능한 닉네임입니다.' : ''
+    }));
+    setErrors(prev => ({
+      ...prev,
+      nickname: isValid ? '' : '이미 사용중인 닉네임입니다.'
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -118,8 +108,10 @@ export default function Join() {
       });
       alert('회원가입 성공!');
       await router.push('/auth/login');
-    } catch (err: any) {
-      alert('회원가입 실패: ' + err.message);
+    } catch (err) {
+      if (err instanceof Error) {
+        alert('회원가입 실패: ' + err.message);
+      }
     }
   }
 
