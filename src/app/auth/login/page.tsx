@@ -1,7 +1,7 @@
 import '../../globals.css'
 import Link from "next/link";
 import {FaFacebook, FaGoogle, FaInstagram} from 'react-icons/fa'
-import LoginForm from "@/components/login/loginForm";
+import LoginForm from "@/components/auth/login/LoginForm";
 
 export default function Login() {
   return (
