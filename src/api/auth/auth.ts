@@ -1,4 +1,4 @@
-import {apiRequest} from "@/api/common/commonApi";
+import {apiRequest} from "@/api/common/common-api";
 
 // 회원가입
 export async function join(request: {

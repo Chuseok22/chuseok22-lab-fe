@@ -3,6 +3,7 @@
 import React, {useState} from "react";
 import {join, validateNickname, validateUsername} from "@/api/auth/auth";
 import {useRouter} from "next/navigation";
+import IsDuplicatedConfirmButton from "@/components/auth/join/IsDuplicatedConfirmButton";
 
 export default function Join() {
   const router = useRouter();
@@ -107,7 +108,7 @@ export default function Join() {
         nickname: formData.nickname
       });
       alert('회원가입 성공!');
-      await router.push('/auth/login');
+      router.push('/auth/login');
     } catch (err) {
       if (err instanceof Error) {
         alert('회원가입 실패: ' + err.message);
@@ -116,83 +117,84 @@ export default function Join() {
   }
 
   return (
-      <div className="min-h-screen flex flex-col items-center justify-center w-full flex-1 px-20 text-center">
-        <div className="bg-white rounded-2xl shadow-2xl flex flex-col w-1/3 max-w-4xl py-20">
-          <div className="py-10 bg-white w-full rounded-tr-2xl rounded-tl-2xl">
-            <h2 className="text-3xl font-bold text-green-500 mb-2">Sign Up</h2>
-            <div className="border-2 w-10 border-green-500 inline-block mb-2"></div>
-            <p className="mb-3">가입을 통해 더 다양한 서비스를 만나보세요!</p>
+      <div className="min-h-screen flex flex-col items-center justify-center w-full flex-1 lg:px-20 text-center">
+        <div className="bg-white rounded-2xl shadow-2xl flex flex-col w-4/5 lg:w-1/3 max-w-md lg:max-w-2xl py-10 lg:py-20">
+          <div className="py-6 lg:py-10 bg-white w-full rounded-tr-2xl rounded-tl-2xl">
+            <h2 className="text-2xl lg:text-3xl font-bold text-green-500 mb-2">Sign Up</h2>
+            <div className="border-2 w-8 lg:w-10 border-green-500 inline-block mb-2"></div>
+            <p className="mb-3 text-sm lg:text-base">가입을 통해 더 다양한 서비스를 만나보세요!</p>
           </div>
           <form onSubmit={handleSubmit} className="bg-white flex flex-col items-center rounded-br-2xl rounded-bl-2xl">
-            <div className="bg-gray-100 w-2/3 p-2 flex items-center mb-3">
+            <div className="bg-gray-100 w-4/5 lg:w-2/3 p-2 flex items-center mb-3">
               <input type="text"
                      id="username"
                      name="username"
                      autoComplete="off"
                      placeholder="아이디를 입력하세요"
-                     className="bg-inherit outline-none text-sm flex-1 m-2"
+                     className="bg-inherit outline-none text-xs lg:text-sm flex-1 m-2"
                      value={formData.username}
                      onChange={handleInputChange}
                      required/>
-              <button type="button" onClick={handleValidateUsername} className="border-2 border-green-500 px-4 py-1.5 text-sm bg-green-500 text-white inline-block font-semibold hover:bg-white hover:text-green-500">중복 확인</button>
+              <IsDuplicatedConfirmButton onClick={handleValidateUsername}/>
             </div>
-            <div className="mb-3 w-2/3 flex items-start">
+            <div className="mb-3 w-4/5 lg:w-2/3 flex items-start">
               {errors.username ? (
                   <p className="text-red-500 text-xs">{errors.username}</p>
               ) : (
                   infos.username && <p className="text-green-500 text-xs">{infos.username}</p>
               )}
             </div>
-            <div className="bg-gray-100 w-2/3 p-2 flex items-center mb-3">
+            <div className="bg-gray-100 w-4/5 lg:w-2/3 p-2 flex items-center mb-3">
               <input type="password"
                      id="password"
                      name="password"
                      placeholder="비밀번호를 입력하세요"
-                     className="bg-inherit outline-none text-sm flex-1 m-2"
+                     className="bg-inherit outline-none text-xs lg:text-sm flex-1 m-2"
                      value={formData.password}
                      onChange={handleInputChange}
                      required/>
             </div>
-            <div className="mb-3 w-2/3 flex items-start">
+            <div className="mb-3 w-4/5 lg:w-3/4 flex items-start">
               {errors.password && <p className="text-red-500 text-xs">{errors.password}</p>}
             </div>
-            <div className="bg-gray-100 w-2/3 p-2 flex items-center mb-3">
+            <div className="bg-gray-100 w-4/5 lg:w-2/3 p-2 flex items-center mb-3">
               <input type="password"
                      id="passwordCheck"
                      name="passwordCheck"
                      placeholder="비밀번호를 다시 입력해주세요"
-                     className="bg-inherit outline-none text-sm flex-1 m-2"
+                     className="bg-inherit outline-none text-xs lg:text-sm flex-1 m-2"
                      value={formData.passwordCheck}
                      onChange={handleInputChange}
                      required/>
             </div>
-            <div className="mb-3 w-2/3 flex items-start">
+            <div className="mb-3 w-4/5 lg:3/4 flex items-start">
               {errors.passwordCheck ? (
                   <p className="text-red-500 text-xs">{errors.passwordCheck}</p>
               ) : (
                   infos.passwordCheck && <p className="text-green-500 text-xs">{infos.passwordCheck}</p>
               )}
             </div>
-            <div className="bg-gray-100 w-2/3 p-2 flex items-center mb-3">
+            <div className="bg-gray-100 w-4/5 lg:w-2/3 p-2 flex items-center mb-3">
               <input type="text"
                      id="nickname"
                      name="nickname"
                      autoComplete="off"
                      placeholder="닉네임을 입력해주세요"
-                     className="bg-inherit outline-none text-sm flex-1 m-2"
+                     className="bg-inherit outline-none text-xs lg:text-sm flex-1 m-2"
                      value={formData.nickname}
                      onChange={handleInputChange}
                      required/>
-              <button type="button" onClick={handleValidateNickname} className="border-2 border-green-500 px-4 py-1.5 text-sm bg-green-500 text-white inline-block font-semibold hover:bg-white hover:text-green-500">중복 확인</button>
+              <IsDuplicatedConfirmButton onClick={handleValidateNickname}/>
             </div>
-            <div className="mb-3 w-2/3 flex items-start">
+            <div className="mb-3 w-4/5 lg:3/4 flex items-start">
               {errors.nickname ? (
                   <p className="text-red-500 text-xs">{errors.nickname}</p>
               ) : (
                   infos.nickname && <p className="text-green-500 text-xs">{infos.nickname}</p>
               )}
             </div>
-            <button type="submit" className="border-2 border-green-500 bg-green-500 rounded-full px-12 py-2 text-white inline-block font-semibold hover:bg-white hover:text-green-500 mb-5">가입하기</button>
+            <button type="submit"
+                    className="border-2 border-green-500 bg-green-500 rounded-full px-5 lg:px-12 py-1 lg:py-2 text-white inline-block font-semibold hover:bg-white hover:text-green-500 mb-5">가입하기</button>
           </form>
         </div>
       </div>
