@@ -5,21 +5,35 @@ import {MdLockOutline} from "react-icons/md";
 import Link from "next/link";
 import React, {useState} from "react";
 import {login} from "@/api/auth/auth";
-import {router} from "next/client";
+import {useRouter} from "next/navigation";
+import {LoginRequest} from "@/api/auth/auth.type";
 
 function LoginForm() {
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+  const [formData, setFormData] = useState<LoginRequest>({
+    username: '',
+    password: ''
+  });
+  const [error, setError] = useState<string>('');
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const {name, value} = e.target;
+    setFormData(prevState => ({...prevState, [name]: value}));
+    setError('');
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await login({username, password});
-      await router.push('/');
-    } catch (err) {
-      if (err instanceof Error) {
+      await login({
+        username: formData.username,
+        password: formData.password
+      });
+      router.push('/');
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error);
         setError('로그인 실패: 아이디 또는 비밀번호를 확인하세요');
       }
     }
@@ -31,11 +45,11 @@ function LoginForm() {
           <FaRegEnvelope className="text-gray-400 m-2"/>
           <input type="text"
                  id="username"
-                 name="id"
+                 name="username"
                  placeholder="아이디를 입력하세요"
                  className="bg-inherit outline-none text-xs lg:text-sm flex-1"
-                 value={username}
-                 onChange={e => setUsername(e.target.value)}
+                 value={formData.username}
+                 onChange={handleInputChange}
                  required
                  autoComplete="off"/>
         </div>
@@ -46,8 +60,8 @@ function LoginForm() {
                  name="password"
                  placeholder="비밀번호를 입력하세요"
                  className="bg-inherit outline-none text-xs lg:text-sm flex-1"
-                 value={password}
-                 onChange={e => setPassword(e.target.value)}
+                 value={formData.password}
+                 onChange={handleInputChange}
                  required/>
         </div>
         {error && <p className="text-red-500 text-xs mb-3">{error}</p>}
