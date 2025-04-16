@@ -3,7 +3,9 @@ import axiosInstance from "@/api/common/axiosInstance";
 import {JoinRequest, LoginRequest} from "@/api/auth/auth.type";
 
 // 로그인
-export const login = async (request: LoginRequest): Promise<void> => {
+export const login = async (
+    request: LoginRequest
+): Promise<void> => {
   const response: AxiosResponse<void> = await axiosInstance.post(`/api/auth/login`, request);
   console.log(response);
 
@@ -28,14 +30,18 @@ export const login = async (request: LoginRequest): Promise<void> => {
 }
 
 // 아이디 중복 검증
-export const validateUsername = async (username: string): Promise<boolean> => {
+export const validateUsername = async (
+    username: string
+): Promise<boolean> => {
   const response = await axiosInstance.get(`/api/auth/validate/username?username=${username}`);
   return response.request;
 }
 
 
 // 닉네임 중복 검증
-export const validateNickname = async (nickname:string): Promise<boolean> => {
+export const validateNickname = async (
+    nickname:string
+): Promise<boolean> => {
   const response = await axiosInstance.get(`/api/auth/validate/nickname?nickname=${nickname}`);
   return response.request;
 }
