@@ -189,7 +189,7 @@ export default function Join() {
                      required/>
               <IsDuplicatedConfirmButton onClick={handleValidateNickname}/>
             </div>
-            <div className="mb-3 w-4/5 lg:3/4 flex items-start">
+            <div className="mb-3 w-4/5 lg:w-2/3 flex items-start">
               {errors.nickname ? (
                   <p className="text-red-500 text-xs">{errors.nickname}</p>
               ) : (
