@@ -1,6 +1,7 @@
-import {AxiosResponse} from "axios";
-import axiosInstance from "@/api/common/axiosInstance";
-import {JoinRequest, LoginRequest} from "@/api/auth/auth.type";
+import { AxiosResponse } from "axios";
+import axiosInstance from "@/lib/api/common/axiosInstance";
+import { JoinRequest, LoginRequest } from "@/lib/api/auth/auth.type";
+import Cookies from "js-cookie";
 
 // 로그인
 export const login = async (
@@ -9,24 +10,12 @@ export const login = async (
   const response: AxiosResponse<void> = await axiosInstance.post(`/api/auth/login`, request);
   console.log(response);
 
-  const authHeader = response.headers['authorization'];
-  if (!authHeader) {
-    throw new Error('응답 헤더에 Authorization 이 포함되어 있지 않습니다.');
+  const accessToken: string | undefined = Cookies.get('accessToken');
+  if (!accessToken) {
+    throw new Error("엑세스 토큰 쿠키가 존재하지 않습니다.");
   }
-
-  // Bearer 접두어 확인 및 제거
-  const tokenPrefix = 'Bearer ';
-  if (!authHeader.startsWith(tokenPrefix)) {
-    throw new Error('Authorization 헤더 형식이 올바르지 않습니다.');
-  }
-
-  const accessToken: string = authHeader.replace(tokenPrefix, '');
-  if (accessToken) {
-    localStorage.setItem('accessToken', accessToken);
-    console.log('엑세스 토큰 저장 완료')
-  } else {
-    throw new Error('accessToken 저장 실패');
-  }
+  localStorage.setItem('accessToken', accessToken);
+  console.log('엑세스 토큰 저장 완료')
 }
 
 // 아이디 중복 검증
@@ -40,14 +29,14 @@ export const validateUsername = async (
 
 // 닉네임 중복 검증
 export const validateNickname = async (
-    nickname:string
+    nickname: string
 ): Promise<boolean> => {
   const response = await axiosInstance.get(`/api/auth/validate/nickname?nickname=${nickname}`);
   return response.request;
 }
 
 // 회원가입
-export const join = async (request: JoinRequest):Promise<void> => {
+export const join = async (request: JoinRequest): Promise<void> => {
   await axiosInstance.post(`/api/auth/join`, request);
 }
 
