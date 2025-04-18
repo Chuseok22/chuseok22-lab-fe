@@ -4,9 +4,10 @@ import {FaRegEnvelope} from "react-icons/fa";
 import {MdLockOutline} from "react-icons/md";
 import Link from "next/link";
 import React, {useState} from "react";
-import {login} from "@/api/auth/auth";
+import {login} from "@/lib/api/auth/auth";
 import {useRouter} from "next/navigation";
-import {LoginRequest} from "@/api/auth/auth.type";
+import {LoginRequest} from "@/lib/api/auth/auth.type";
+import SubmitButton from "@/components/github/issue-helper/SubmitButton";
 
 function LoginForm() {
 
@@ -71,10 +72,7 @@ function LoginForm() {
           </label>
           <Link href="" className="text-xs">Forget Password?</Link>
         </div>
-        <button type="submit"
-                className="border-2 border-green-500 rounded-full px-12 py-2 text-green-500 inline-block font-semibold hover:bg-green-500 hover:text-white mb-2">
-          Sign In
-        </button>
+        <SubmitButton type={"submit"} text={"Sign In"} isGreen={false}/>
       </form>
   )
 };

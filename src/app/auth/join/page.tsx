@@ -1,9 +1,10 @@
 'use client'
 
-import React, {useState} from "react";
-import {join, validateNickname, validateUsername} from "@/api/auth/auth";
-import {useRouter} from "next/navigation";
+import React, { useState } from "react";
+import { join, validateNickname, validateUsername } from "@/lib/api/auth/auth";
+import { useRouter } from "next/navigation";
 import IsDuplicatedConfirmButton from "@/components/auth/join/IsDuplicatedConfirmButton";
+import SubmitButton from "@/components/github/issue-helper/SubmitButton";
 
 export default function Join() {
   const router = useRouter();
@@ -27,6 +28,7 @@ export default function Join() {
   const [isUsernameValid, setIsUsernameValid] = useState<boolean | null>(null);
   const [isNicknameValid, setIsNicknameValid] = useState<boolean | null>(null);
 
+  // 입력값 변경 핸들러
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = e.target;
     setFormData((prev) => ({...prev, [name]: value}));
@@ -82,6 +84,7 @@ export default function Join() {
     }));
   };
 
+  // 폼 제출 핸들러
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -193,8 +196,7 @@ export default function Join() {
                   infos.nickname && <p className="text-green-500 text-xs">{infos.nickname}</p>
               )}
             </div>
-            <button type="submit"
-                    className="border-2 border-green-500 bg-green-500 rounded-full px-5 lg:px-12 py-1 lg:py-2 text-white inline-block font-semibold hover:bg-white hover:text-green-500 mb-5">가입하기</button>
+            <SubmitButton type={"submit"} text={"가입하기"} isGreen={false}/>
           </form>
         </div>
       </div>
