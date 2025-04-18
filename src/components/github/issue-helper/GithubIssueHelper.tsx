@@ -1,0 +1,179 @@
+'use client'
+
+import React, { FormEvent, useState } from "react";
+import { processIssueHelper } from "@/lib/api/github/issue-helper/issueHelper";
+import { issueHelperRequest, issueHelperResponse } from "@/lib/api/github/issue-helper/issueHelper.type";
+import Link from "next/link";
+import SubmitButton from "@/components/github/issue-helper/SubmitButton";
+import { AxiosError } from "axios";
+import { ApiErrorResponse, errorMessages, isApiErrorResponse } from "@/lib/api/common/error/error.type";
+import { toast } from "react-toastify";
+
+const GithubIssueHelper: React.FC = () => {
+  const [issueHelperRequest, setIssueHelperRequest] = useState({
+    issueUrl: '',
+    githubToken: '',
+  });
+  const [issueHelperResponse, setIssueHelperResponse] = useState<issueHelperResponse | null>({
+    branchName: '',
+    commitMessage: '',
+  });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [copiedField, setCopiedField] = useState<'branchName' | 'commitMessage' | null>(null);
+
+  // 입력값 변경 핸들러
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const {name, value} = e.target;
+    setIssueHelperRequest(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  }
+
+  // 복사 버튼 핸들러
+  const handleCopy = async (
+      text: string, field: 'branchName' | 'commitMessage') => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedField(field);
+      setTimeout(() => setCopiedField(null), 2000); // 2초 후 복사 상태 초기화
+      toast('복사 성공!');
+    } catch (error) {
+      console.error('복사 실패', error);
+      toast.error('복사 실패!');
+    }
+  }
+
+  // 폼 제출 핸들러
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setIssueHelperResponse(null);
+    setIsLoading(true);
+
+    // 입력값 검증
+    const trimmedIssueUrl = issueHelperRequest.issueUrl.trim();
+    if (!trimmedIssueUrl) {
+      toast.error('Github Issue URL을 입력해주세요.');
+      setIsLoading(false);
+      return;
+    }
+    // GitHub Issue URL 형식 검증
+    const githubIssueRegex = /^https:\/\/github\.com\/[^\/]+\/[^\/]+\/issues\/\d+$/;
+    if (!githubIssueRegex.test(trimmedIssueUrl)) {
+      toast.error('올바른 URL을 입력해주세요. (예: https://github.com/owner/repo/issues/123)');
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const request: issueHelperRequest = {
+        issueUrl: trimmedIssueUrl,
+        githubToken: issueHelperRequest.githubToken.trim() || null,
+      };
+      const response = await processIssueHelper(request);
+      setIssueHelperResponse(response);
+      setIsLoading(false);
+    } catch (error) {
+      const axiosError = error as AxiosError<ApiErrorResponse>;
+      const errorData = axiosError.response?.data;
+
+      if (errorData && isApiErrorResponse(errorData)) {
+        toast.error(errorMessages[errorData.errorCode] || '에러 핸들링 실패. 알 수 없는 오류');
+      } else {
+        toast.error('에러 핸들링 실패. 알 수 없는 오류');
+      }
+      setIsLoading(false);
+    }
+  };
+
+  return (
+      <div className="bg-white rounded-2xl shadow-2xl flex w-4/5 lg:w-2/3 py-10 lg:py-30">
+        <div className="flex flex-col lg:w-1/2">
+          <h1 className="text-bold text-green-500 text-3xl pb-10">Github Issue Helper</h1>
+          <form onSubmit={handleSubmit} className="flex flex-col items-center">
+            <div className="flex flex-col w-3/4 py-5">
+              <label htmlFor="issueUrl" className="flex">
+                <p className="mb-1 text-lg">Github Issue URL <span className="text-red-500">*</span></p>
+              </label>
+              <input
+                  type="text"
+                  id="issueUrl"
+                  name="issueUrl"
+                  value={issueHelperRequest.issueUrl}
+                  onChange={handleInputChange}
+                  placeholder="ex) https://github.com/owner/repo/issues/123"
+                  className="flex border-green-500 border-2 px-1"
+                  required
+                  autoComplete="off"
+              />
+            </div>
+            <div className="flex flex-col w-3/4 py-5 mb-10">
+              <label htmlFor="githubToken" className="flex flex-col items-start">
+                <p className="text-lg">Github Personal Token</p>
+                <span className="text-gray-500 text-sm mb-2">(Private Repository 접근 시 필요합니다.){' '}
+                  <Link href="https://github.com/settings/tokens"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 underline italic">
+                  Create Personal Token
+                </Link>
+              </span>
+              </label>
+              <input
+                  type="text"
+                  id="githubToken"
+                  name="githubToken"
+                  value={issueHelperRequest.githubToken}
+                  onChange={handleInputChange}
+                  placeholder="GitHub Personal Access Token"
+                  className="flex border-green-500 border-2 px-1"
+                  autoComplete="off"
+              />
+            </div>
+
+            <SubmitButton type={"submit"} text={isLoading ? "처리중..." : "요청"} isGreen={false}/>
+          </form>
+        </div>
+        <div className="hidden lg:flex flex-col lg:w-1/2 border-l-3 border-green-500 items-center justify-center">
+          <div className="flex flex-col items-start py-7 w-4/5">
+            <div className="flex items-start">
+              <p className="text-lg mb-2 mr-2">Branch Name</p>
+              {issueHelperResponse?.branchName && (
+                  <button
+                      onClick={() => handleCopy(issueHelperResponse.branchName, 'branchName')}
+                      className="text-sm bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-500 cursor-pointer"
+                  >
+                    {copiedField === 'branchName' ? 'Copied!' : 'Copy'}
+                  </button>
+              )}
+            </div>
+            <textarea placeholder="파싱된 브랜치명이 출력됩니다"
+                      value={issueHelperResponse?.branchName}
+                      className="border-2 border-green-500 w-full px-1 py-1"
+                      readOnly={true}
+            />
+          </div>
+          <div className="flex flex-col items-start py-7 w-4/5">
+            <div className="flex items-start">
+              <p className="text-lg mb-2 mr-2">Commit Message</p>
+              {issueHelperResponse?.commitMessage && (
+                  <button
+                      onClick={() => handleCopy(issueHelperResponse.commitMessage, 'commitMessage')}
+                      className="text-sm bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-500 cursor-pointer"
+                  >
+                    {copiedField === 'commitMessage' ? 'Copied!' : 'Copy'}
+                  </button>
+              )}
+            </div>
+            <textarea placeholder="파싱된 커밋 메시지명이 출력됩니다"
+                      value={issueHelperResponse?.commitMessage}
+                      className="border-2 border-green-500 w-full px-1 py-1"
+                      readOnly={true}
+            />
+          </div>
+        </div>
+      </div>
+  );
+}
+
+export default GithubIssueHelper;
