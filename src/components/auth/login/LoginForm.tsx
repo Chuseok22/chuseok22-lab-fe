@@ -32,6 +32,7 @@ function LoginForm() {
         password: formData.password
       });
       router.push('/');
+      router.refresh();
     } catch (error) {
       if (error instanceof Error) {
         console.log(error);
