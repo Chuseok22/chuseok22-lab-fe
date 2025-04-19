@@ -6,6 +6,7 @@ export function middleware(request: NextRequest) {
 
   // 인증 상태 확인
   const accessToken: string | null | undefined = request.cookies.get('accessToken')?.value;
+  console.log(accessToken);
 
   // 이미 인증된 사용자는 로그인 & 회원가입 페이지 접근 불가
   if (hasAccessToken(accessToken) && AUTH_PATHS.includes(pathname)) {
