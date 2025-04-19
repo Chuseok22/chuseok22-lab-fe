@@ -5,10 +5,11 @@ export function middleware(request: NextRequest) {
   const pathname: string = request.nextUrl.pathname;
 
   // 인증 상태 확인
-  const accessToken: string | undefined = request.cookies.get('accessToken')?.value;
+  const accessToken: string | null | undefined = request.cookies.get('accessToken')?.value;
+  console.log(accessToken);
 
   // 이미 인증된 사용자는 로그인 & 회원가입 페이지 접근 불가
-  if (accessToken && AUTH_PATHS.includes(pathname)) {
+  if (hasAccessToken(accessToken) && AUTH_PATHS.includes(pathname)) {
     console.log("이미 로그인 된 사용자입니다.");
     const url = new URL('/', request.url);
     return NextResponse.redirect(url);
@@ -31,4 +32,12 @@ export function middleware(request: NextRequest) {
 // 미들웨어 적용 경로
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico|fonts|images|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
+}
+
+function hasAccessToken(accessToken: string | null | undefined): boolean {
+  if (typeof accessToken === "string") {
+    return true;
+  } else {
+    return false;
+  }
 }
