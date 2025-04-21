@@ -53,6 +53,11 @@ axiosInstance.interceptors.response.use(
 
       // 401 에러 처리
       if (error.response.status === 401 && !originalRequest._retry) {
+
+        if (error.response.data.errorCode === 'INVALID_REFRESH_TOKEN') {
+          console.error("리프래시 토큰이 유효하지 않아 로그인 페이지로 이동합니다.");
+          window.location.href = `/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+        }
         originalRequest._retry = true;
         try {
           localStorage.removeItem('accessToken'); // 로컬 스토리지 삭제
