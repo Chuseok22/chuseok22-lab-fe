@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { AUTH_PATHS, PUBLIC_PATHS } from "@/lib/api/auth/auth.type";
-import { refreshAccessToken } from "@/lib/api/auth/auth";
 
 // middleware.ts 제외 경로
 const EXCLUDED_PATHS = [
