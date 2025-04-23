@@ -2,6 +2,7 @@ import { AxiosResponse } from "axios";
 import axiosInstance from "@/lib/api/common/axiosInstance";
 import { JoinRequest, LoginRequest } from "@/lib/api/auth/auth.type";
 import Cookies from "js-cookie";
+import { hasAccessToken } from "@/middleware";
 
 // 로그인
 export const login = async (
@@ -11,10 +12,9 @@ export const login = async (
   console.log(response);
 
   const accessToken: string | undefined = Cookies.get('accessToken');
-  if (!accessToken) {
+  if (!hasAccessToken(accessToken)) {
     throw new Error("엑세스 토큰 쿠키가 존재하지 않습니다.");
   }
-  localStorage.setItem('accessToken', accessToken);
   console.log('엑세스 토큰 저장 완료')
 }
 
@@ -41,11 +41,15 @@ export const join = async (request: JoinRequest): Promise<void> => {
 }
 
 // 엑세스 토큰 만료 시 재발급
-export const refreshAccessToken = async (): Promise<string> => {
-  const response = await axiosInstance.post('/api/auth/refresh');
-  const newAccessToken = response.headers['authorization']?.replace('Bearer ', '');
-  if (!newAccessToken) {
-    throw new Error('AccessToken 재발급에 실패했습니다.');
+export const refreshAccessToken = async (): Promise<string | undefined> => {
+  await axiosInstance.post('/api/auth/refresh');
+  const newAccessToken: string | undefined = Cookies.get('accessToken');
+  if (!hasAccessToken(newAccessToken)) {
+    console.error('엑세스 토큰 재발급에 실패했습니다')
+    Cookies.remove('accessToken');
+    if (typeof window !== 'undefined') {
+      window.location.href = `/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+    }
   }
   return newAccessToken;
 }
