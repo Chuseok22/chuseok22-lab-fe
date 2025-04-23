@@ -3,17 +3,23 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import SideMenuBar from "@/components/header/SideMenuBar";
+
+export const navItems = [
+  {href: '/', label: 'Home'},
+  {href: '/github/issue-helper', label: 'Issue Helper'},
+  {href: '/auth/login', label: 'Login'},
+  {href: '/', label: 'Search', icon: '/search.svg'},
+]
 
 const Header: React.FC = () => {
 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
 
-  const navItems = [
-    {href: '/', label: 'Home'},
-    {href: '/github/issue-helper', label: 'Issue Helper'},
-    {href: '/auth/login', label: 'Login'},
-    {href: '/', label: 'Search', icon: '/search.svg'},
-  ]
+  const toggleSidebar = () => {
+    setIsSidebarOpen(prev => !prev);
+  }
 
   return (
       <header className="flex bg-green-300 py-3 mt-5 items-center">
@@ -51,9 +57,12 @@ const Header: React.FC = () => {
             <Image src="/search.svg" alt="search" width={20} height={20}/>
           </div>
           <div className="flex items-center">
-            <Image src="/menu-rounded.svg" alt="menu" width="20" height="20"/>
+            <button onClick={toggleSidebar}>
+              <Image src="/menu-rounded.svg" alt="menu" width="20" height="20"/>
+            </button>
           </div>
         </nav>
+        <SideMenuBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}/>
       </header>
   );
 };
