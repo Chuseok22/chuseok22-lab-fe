@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from "axios";
 import { AUTH_WHITELIST } from "@/lib/api/auth/auth.type";
 import Cookies from "js-cookie";
 import { ApiErrorResponse } from "@/lib/api/common/error/error.type";
+import { hasAccessToken } from "@/middleware";
 
 interface CustomAxiosRequestConfig extends AxiosRequestConfig {
   _retry?: boolean;
@@ -22,6 +23,8 @@ const axiosInstance: AxiosInstance = axios.create({
 // 요청 인터셉터: AccessToken을 헤더에 추가
 axiosInstance.interceptors.request.use(
     config => {
+      console.log('요청: ', config.url, config.method);
+      console.log('요청 쿠키: ', Cookies.get());
 
       // AUTH_WHITELIST는 헤더 추가X
       if (config.url && AUTH_WHITELIST.includes(config.url)) {
@@ -31,7 +34,7 @@ axiosInstance.interceptors.request.use(
       // AccessToken 추가
       if (typeof window !== 'undefined') {
         const accessToken = Cookies.get('accessToken'); // 쿠기에서 accessToken 추출
-        if (accessToken) {
+        if (hasAccessToken(accessToken)) {
           config.headers['authorization'] = `Bearer ${accessToken}`;
         }
       }
@@ -51,31 +54,38 @@ axiosInstance.interceptors.response.use(
         throw error;
       }
 
-      // 401 에러 처리
+      // 401 에러 처리: 즉시 로그인 페이지로 리다이렉트
       if (error.response.status === 401 && !originalRequest._retry) {
-
-        if (error.response.data.errorCode === 'INVALID_REFRESH_TOKEN') {
-          console.error("리프래시 토큰이 유효하지 않아 로그인 페이지로 이동합니다.");
+        console.error('인증에 실패했습니다. 다시 로그인해주세요');
+        if (typeof window !== 'undefined') {
           window.location.href = `/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`;
         }
+        Cookies.remove('accessToken');
+        throw error;
+      }
+
+      // 403 에러 처리: 엑세스 토큰 재발급 시도
+      if (error.response.status === 403 && !originalRequest._retry) {
         originalRequest._retry = true;
+
         try {
-          localStorage.removeItem('accessToken'); // 로컬 스토리지 삭제
-          await axiosInstance.post('/api/auth/refresh'); // api요청
-          const newAccessToken: string | null | undefined = Cookies.get('accessToken');
-          if (typeof newAccessToken !== "string") {
-            console.error('엑세스 토큰 재발급에 실패하여 로그인 페이지로 이동합니다.');
-            window.location.href = `/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`;
-          } else {
-            localStorage.setItem('accessToken', newAccessToken);
-            originalRequest.headers = originalRequest.headers || {};
-            originalRequest.headers['Authorization'] = newAccessToken;
-            return axiosInstance(originalRequest);
+          console.log('엑세스 토큰 만료, 재발급 시도');
+          const newAccessToken = await axiosInstance.post('/api/auth/refresh').then(() => Cookies.get('accessToken'));
+          if (!hasAccessToken(newAccessToken)) {
+            throw new Error('엑세스 토큰 재발급 실패');
           }
+          console.log('엑세스 토큰 재발급 성공');
+          originalRequest.headers = originalRequest.headers || {};
+          originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+          return axiosInstance(originalRequest);
+
         } catch (refreshError) {
-          console.error('토큰 재발급 중 오류 발생: ', refreshError);
+          console.error('엑세스 토큰 재발급 중 오류 발생: ', refreshError);
           Cookies.remove('accessToken');
-          window.location.href = `/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+          if (typeof window !== 'undefined') {
+            window.location.href = `/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+          }
+          throw refreshError;
         }
       }
 
