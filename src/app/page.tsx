@@ -1,8 +1,7 @@
 export default function Home() {
 
   return (
-      <div>
-
+      <div className='bg-sky-50 h-full w-full'>
       </div>
   );
 }

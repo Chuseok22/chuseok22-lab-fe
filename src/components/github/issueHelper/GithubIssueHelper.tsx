@@ -4,7 +4,7 @@ import React, { FormEvent, useState } from "react";
 import { processIssueHelper } from "@/lib/api/github/issue-helper/issueHelper";
 import { issueHelperRequest, issueHelperResponse } from "@/lib/api/github/issue-helper/issueHelper.type";
 import Link from "next/link";
-import SubmitButton from "@/components/github/issue-helper/SubmitButton";
+import SubmitButton from "@/components/github/issueHelper/SubmitButton";
 import { AxiosError } from "axios";
 import { ApiErrorResponse, errorMessages, isApiErrorResponse } from "@/lib/api/common/error/error.type";
 import { toast } from "react-toastify";

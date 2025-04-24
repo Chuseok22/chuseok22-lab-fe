@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { join, validateNickname, validateUsername } from "@/lib/api/auth/auth";
 import { useRouter } from "next/navigation";
 import IsDuplicatedConfirmButton from "@/components/auth/join/IsDuplicatedConfirmButton";
-import SubmitButton from "@/components/github/issue-helper/SubmitButton";
+import SubmitButton from "@/components/github/issueHelper/SubmitButton";
 
 export default function Join() {
   const router = useRouter();

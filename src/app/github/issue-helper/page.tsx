@@ -1,4 +1,4 @@
-import GithubIssueHelper from "@/components/github/issue-helper/GithubIssueHelper";
+import GithubIssueHelper from "@/components/github/issueHelper/GithubIssueHelper";
 
 export default function IssueHelper() {
   return (
