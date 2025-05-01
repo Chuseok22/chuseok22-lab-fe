@@ -3,6 +3,16 @@ export interface ApiErrorResponse {
   errorMessage: string;
 }
 
+/**
+ * CustomException
+ */
+export class CustomException extends Error {
+  constructor(public errorCode: ErrorCode, errorMessage: string) {
+    super(errorMessage);
+    Object.setPrototypeOf(this, new.target.prototype);
+  }
+}
+
 // ApiErrorResponse 타입가드
 export const isApiErrorResponse = (
     data: unknown): data is ApiErrorResponse => {
