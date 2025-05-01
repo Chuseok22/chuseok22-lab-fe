@@ -1,14 +1,16 @@
-import { issueHelperRequest, issueHelperResponse } from "@/lib/api/github/issue-helper/issueHelper.type";
-import axiosInstance from "@/lib/api/common/axiosInstance";
+import { IssueHelperRequest, IssueHelperResponse } from "@/lib/api/github/issue-helper/issueHelper.type";
+import axiosClient from "@/lib/api/common/http/axiosClient";
 
 /**
  * Issue Helper API 요청
  * @param request issueUrl, githubToken
  */
-export const processIssueHelper = async (
-    request: issueHelperRequest
-): Promise<issueHelperResponse> => {
+const processIssueHelper = async (
+    request: IssueHelperRequest
+): Promise<IssueHelperResponse> => {
     const response =
-        await axiosInstance.post<issueHelperResponse>('/api/github/issue', request);
+        await axiosClient.post<IssueHelperResponse>('/api/github/issue', request);
     return response.data;
 }
+
+export default processIssueHelper;

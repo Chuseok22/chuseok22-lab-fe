@@ -1,6 +1,5 @@
 import React from 'react';
 import './globals.css'
-import Header from "@/components/header/Header";
 import { ToastContainer } from "react-toastify";
 
 export const metadata = {
@@ -8,18 +7,15 @@ export const metadata = {
   description: 'Chuseok22 Lab',
 };
 
-export default function RootLayout({children}: { children: React.ReactNode }) {
+export default async function RootLayout({children}: { children: React.ReactNode }) {
   return (
       <html lang="ko">
-      <body className="flex flex-col w-full max-w-screen mx-auto">
-      <Header/>
-      <main className="grow">
-        {children}
-        <ToastContainer position="top-right"
-                        autoClose={3000}
-                        theme="light"
-        />
-      </main>
+      <body className="flex flex-col min-h-screen max-w-screen mx-auto">
+      {children}
+      <ToastContainer position="top-right"
+                      autoClose={3000}
+                      theme="light"
+      />
       </body>
       </html>
   );
