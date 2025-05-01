@@ -1,8 +1,9 @@
 'use client'
 
-import { navItems } from "@/components/header/Header";
 import Link from "next/link";
 import React from "react";
+import { navItems } from "@/components/header/navItems";
+
 
 interface SideMenuBarProps {
   isSidebarOpen: boolean;
@@ -18,9 +19,9 @@ const SideMenuBar = ({isSidebarOpen, toggleSidebar}: SideMenuBarProps) => {
         </div>
         <div className='bg-black border-1 mx-5'></div>
         <nav className='flex flex-col p-5'>
-          {navItems.map((item, index) => (
+          {navItems.map((item) => (
               <Link href={item.href}
-                    key={index}
+                    key={item.label}
                     className="py-2 px-4 text-gray-7000 hover:text-black hover:bg-green-300 rounded transition-colors duration-200"
                     onClick={toggleSidebar}
               >
