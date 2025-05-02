@@ -48,3 +48,12 @@ export const refreshAccessToken = async (): Promise<string> => {
   }
   return newAccessToken;
 }
+
+// 로그아웃
+export const logout = async () => {
+  try {
+    await axiosClient.post('/api/auth/logout');
+  } catch {
+    console.log('에러 발생했는데 어쩌라고')
+  }
+}

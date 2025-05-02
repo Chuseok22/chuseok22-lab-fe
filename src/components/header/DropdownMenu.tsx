@@ -14,7 +14,7 @@ interface DropdownMenuProps {
 
 export function DropdownMenu({ items }: DropdownMenuProps) {
   return (
-      <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
+      <div className="hidden lg:block absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
         {items.map((item, idx) =>
             item.href ? (
                 <Link
