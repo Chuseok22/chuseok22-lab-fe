@@ -34,7 +34,7 @@ axiosClient.interceptors.request.use(
  */
 axiosClient.interceptors.response.use(
     // 성공 시 바로 payload 리턴
-    (response) => response.data,
+    (response) => response,
     async (error) => {
       const originalRequest = error.config as CustomAxiosRequestConfig;
       const status = error.response?.status;
