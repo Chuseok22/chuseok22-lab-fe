@@ -3,7 +3,7 @@ import { MemberResponse } from "@/lib/api/home/member.type";
 
 interface MemberState {
   member: MemberResponse | null;
-  setMember: (member: MemberResponse) => void;
+  setMember: (member: MemberResponse | null) => void;
 }
 
 const useMemberInfo = create<MemberState>((setState) => ({
