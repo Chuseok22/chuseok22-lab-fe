@@ -23,7 +23,8 @@ export async function serverFetch<T>(
   });
 
   if (!response.ok) {
-    throw new Error("SSR 요청 중 오류 발생");
+    const msg = await response.text();
+    throw new Error(`SSR 요청 실패 (${response.status}): ${msg}`);
   }
   return response.json();
 }
