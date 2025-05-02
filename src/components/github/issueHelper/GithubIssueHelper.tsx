@@ -66,8 +66,8 @@ const GithubIssueHelper = () => {
         issueUrl: trimmedIssueUrl,
         githubToken: issueHelperRequest.githubToken.trim() || null,
       };
-      const response = await processIssueHelper(request);
-      setIssueHelperResponse(response);
+      const data: IssueHelperResponse = await processIssueHelper(request);
+      setIssueHelperResponse(data);
       setIsLoading(false);
       // 모바일에서 모달 열기 (lg 미만)
       if (window.innerWidth < 1024) { // lg breakpoint
