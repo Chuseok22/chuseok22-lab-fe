@@ -70,7 +70,8 @@ axiosClient.interceptors.response.use(
 
 // 로그인 페이지 리다이렉트 로직
 function redirectToLoginClient() {
-  Cookies.remove("accessToken")
+  Cookies.remove('accessToken');
+  Cookies.remove('refreshToken');
   const redirect = encodeURIComponent(window.location.pathname)
   window.location.href = `/auth/login?redirect=${redirect}`
 }
