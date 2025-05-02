@@ -8,9 +8,9 @@ import axiosClient from "@/lib/api/common/http/axiosClient";
 const processIssueHelper = async (
     request: IssueHelperRequest
 ): Promise<IssueHelperResponse> => {
-    const response =
-        await axiosClient.post<IssueHelperResponse>('/api/github/issue', request);
-    return response.data;
+  const response =
+      await axiosClient.post<IssueHelperResponse>('/api/github/issue', request);
+  return response.data;
 }
 
 export default processIssueHelper;
