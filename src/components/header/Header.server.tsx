@@ -37,8 +37,8 @@ const HeaderServer = async () => {
           <div className="hidden lg:flex lg:flex-1 items-center justify-center">
             <UsernameSection username={username}/>
           </div>
+          <HeaderClient username={username}/>
         </header>
-        <HeaderClient/>
       </>
   );
 }

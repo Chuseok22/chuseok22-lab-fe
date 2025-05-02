@@ -5,12 +5,15 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { DropdownItem, DropdownMenu } from "@/components/header/DropdownMenu";
+import { useRouter } from "next/navigation";
+import { logout } from "@/lib/api/auth/auth";
 
 interface UsernameSectionProps {
   username: string | null;
 }
 
 const UsernameSection = ({username}: UsernameSectionProps) => {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -19,7 +22,7 @@ const UsernameSection = ({username}: UsernameSectionProps) => {
     {label: 'My Page', href: '/my-page'},
     {
       label: 'Logout', onClick: () => {
-        // TODO: 로그이웃 API 호출 및 라다이랙트
+        logout().then(() => router.push('/'));
       },
     },
   ];
