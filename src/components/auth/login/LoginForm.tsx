@@ -7,7 +7,7 @@ import React, {useState} from "react";
 import {login} from "@/lib/api/auth/auth";
 import {useRouter} from "next/navigation";
 import {LoginRequest} from "@/lib/api/auth/auth.type";
-import SubmitButton from "@/components/github/issue-helper/SubmitButton";
+import SubmitButton from "@/components/github/issueHelper/SubmitButton";
 
 function LoginForm() {
 

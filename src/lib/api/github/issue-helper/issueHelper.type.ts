@@ -1,11 +1,11 @@
-interface issueHelperRequest {
+interface IssueHelperRequest {
   issueUrl: string;
   githubToken: string | null;
 }
 
-interface issueHelperResponse {
+interface IssueHelperResponse {
   branchName: string;
   commitMessage: string;
 }
 
-export type {issueHelperRequest, issueHelperResponse};
+export type {IssueHelperRequest, IssueHelperResponse};

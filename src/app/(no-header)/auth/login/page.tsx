@@ -1,8 +1,8 @@
-import '../../globals.css'
+import '../../../globals.css'
 import Link from "next/link";
 import { FaFacebook, FaGoogle, FaInstagram } from 'react-icons/fa'
 import LoginForm from "@/components/auth/login/LoginForm";
-import SubmitButton from "@/components/github/issue-helper/SubmitButton";
+import SubmitButton from "@/components/github/issueHelper/SubmitButton";
 
 export default function Login() {
   return (

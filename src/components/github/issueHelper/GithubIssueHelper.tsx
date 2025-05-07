@@ -1,23 +1,19 @@
 'use client'
 
 import React, { FormEvent, useState } from "react";
-import { processIssueHelper } from "@/lib/api/github/issue-helper/issueHelper";
-import { issueHelperRequest, issueHelperResponse } from "@/lib/api/github/issue-helper/issueHelper.type";
+import { IssueHelperRequest, IssueHelperResponse } from "@/lib/api/github/issue-helper/issueHelper.type";
 import Link from "next/link";
-import SubmitButton from "@/components/github/issue-helper/SubmitButton";
-import { AxiosError } from "axios";
-import { ApiErrorResponse, errorMessages, isApiErrorResponse } from "@/lib/api/common/error/error.type";
+import SubmitButton from "@/components/github/issueHelper/SubmitButton";
+import { CustomException } from "@/lib/api/common/error/error.type";
 import { toast } from "react-toastify";
+import processIssueHelper from "@/lib/api/github/issue-helper/issueHelper";
 
-const GithubIssueHelper: React.FC = () => {
+const GithubIssueHelper = () => {
   const [issueHelperRequest, setIssueHelperRequest] = useState({
     issueUrl: '',
     githubToken: '',
   });
-  const [issueHelperResponse, setIssueHelperResponse] = useState<issueHelperResponse | null>({
-    branchName: '',
-    commitMessage: '',
-  });
+  const [issueHelperResponse, setIssueHelperResponse] = useState<IssueHelperResponse | null>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [copiedField, setCopiedField] = useState<'branchName' | 'commitMessage' | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -39,8 +35,7 @@ const GithubIssueHelper: React.FC = () => {
       setCopiedField(field);
       setTimeout(() => setCopiedField(null), 2000); // 2초 후 복사 상태 초기화
       toast('복사 성공!');
-    } catch (error) {
-      console.error('복사 실패', error);
+    } catch {
       toast.error('복사 실패!');
     }
   }
@@ -67,25 +62,23 @@ const GithubIssueHelper: React.FC = () => {
     }
 
     try {
-      const request: issueHelperRequest = {
+      const request: IssueHelperRequest = {
         issueUrl: trimmedIssueUrl,
         githubToken: issueHelperRequest.githubToken.trim() || null,
       };
-      const response = await processIssueHelper(request);
-      setIssueHelperResponse(response);
+      const data: IssueHelperResponse = await processIssueHelper(request);
+      setIssueHelperResponse(data);
       setIsLoading(false);
       // 모바일에서 모달 열기 (lg 미만)
       if (window.innerWidth < 1024) { // lg breakpoint
         setIsModalOpen(true);
       }
     } catch (error) {
-      const axiosError = error as AxiosError<ApiErrorResponse>;
-      const errorData = axiosError.response?.data;
-
-      if (errorData && isApiErrorResponse(errorData)) {
-        toast.error(errorMessages[errorData.errorCode] || '에러 핸들링 실패. 알 수 없는 오류');
+      if (error instanceof CustomException) {
+        toast.error(error.message);
       } else {
-        toast.error('에러 핸들링 실패. 알 수 없는 오류');
+        console.error(error);
+        toast.error('알 수 없는 오류가 발생했습니다.');
       }
       setIsLoading(false);
     }
