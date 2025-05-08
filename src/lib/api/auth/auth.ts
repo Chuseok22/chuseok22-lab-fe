@@ -53,7 +53,7 @@ export const refreshAccessToken = async (): Promise<string> => {
 export const logout = async () => {
   try {
     await axiosClient.post('/api/auth/logout');
-  } catch {
-    console.log('에러 발생했는데 어쩌라고')
+  } catch (error) {
+    console.log("로그아웃 API 요청중 오류 발생 ", error);
   }
 }
